@@ -247,9 +247,8 @@ namespace ds2i {
 
                 uint64_t prev_pos = m_position - 1;
                 uint64_t prev_low =
-                    m_bv->get_word56(m_of.lower_bits_offset +
-                                     prev_pos * m_of.lower_bits)
-                    & m_of.mask;
+                    m_bv->get_bits(m_of.lower_bits_offset +
+                                   prev_pos * m_of.lower_bits, m_of.lower_bits);
                 return ((prev_high - prev_pos - 1) << m_of.lower_bits) | prev_low;
             }
 
@@ -344,9 +343,9 @@ namespace ds2i {
 
             inline uint64_t read_low()
             {
-                return m_bv->get_word56(m_of.lower_bits_offset
-                                        + m_position * m_of.lower_bits)
-                    & m_of.mask;
+                return m_bv->get_bits(m_of.lower_bits_offset
+                                      + m_position * m_of.lower_bits,
+                                      m_of.lower_bits);
             }
 
             inline uint64_t read_next()
@@ -375,7 +374,7 @@ namespace ds2i {
                 uint64_t operator()()
                 {
                     uint64_t high = high_enumerator.next() - high_base;
-                    uint64_t low = bv.get_word56(lower_base) & mask;
+                    uint64_t low = bv.get_bits(lower_base, lower_bits);
                     high_base += 1;
                     lower_base += lower_bits;
                     return (high << lower_bits) | low;
